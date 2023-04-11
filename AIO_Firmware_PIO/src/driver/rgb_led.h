@@ -135,6 +135,6 @@ struct RgbRunStatus
 bool set_rgb_and_run(RgbParam *rgb_setting,
                      LED_RUN_MODE mode = RUN_MODE_TASK);
 void rgb_stop(void);
-
+void close_led();
 
 #endif

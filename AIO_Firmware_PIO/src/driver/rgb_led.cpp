@@ -301,3 +301,11 @@ void rgb_stop(void)
         handleLed = NULL;
     }
 }
+
+void close_led(){
+    RgbParam rgb_setting = {LED_MODE_RGB, 0, 0, 0,
+                            0, 0, 0,
+                            1, 1, 1,
+                            0, 0, 0.001, 50};
+    set_rgb_and_run(&rgb_setting);
+}

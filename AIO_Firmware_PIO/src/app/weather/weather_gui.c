@@ -289,7 +289,7 @@ void display_weather(struct Weather weaInfo, lv_scr_load_anim_t anim_type)
 void display_time(struct TimeStr timeInfo, lv_scr_load_anim_t anim_type)
 {
     display_weather_init(anim_type);
-    lv_label_set_text_fmt(clockLabel_1, "%02d#ffa500 %02d#", timeInfo.hour, timeInfo.minute);
+    lv_label_set_text_fmt(clockLabel_1, "%02d#ff0000 %02d#", timeInfo.hour, timeInfo.minute);
     lv_label_set_text_fmt(clockLabel_2, "%02d", timeInfo.second);
     lv_label_set_text_fmt(dateLabel, "%2d月%2d日   周%s", timeInfo.month, timeInfo.day,
                           weekDayCh[timeInfo.weekday]);

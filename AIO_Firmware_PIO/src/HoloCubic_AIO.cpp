@@ -187,8 +187,6 @@ void setup()
 #if APP_LHLXW_USE
     app_controller->app_install(&LHLXW_app);
 #endif
-    // 自启动APP
-    app_controller->app_auto_start();
 
     // 优先显示屏幕 加快视觉上的开机时间
     app_controller->main_process(&mpu.action_info);
@@ -219,6 +217,10 @@ void setup()
                                 200 / portTICK_PERIOD_MS,
                                 pdTRUE, (void *)0, actionCheckHandle);
     xTimerStart(xTimerAction, 0);
+
+    // 自启动APP
+    app_controller->app_auto_start();
+
 }
 
 void loop()

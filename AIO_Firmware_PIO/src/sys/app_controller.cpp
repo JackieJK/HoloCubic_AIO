@@ -151,9 +151,9 @@ int AppController::main_process(ImuAction *act_info)
     }
 
     // wifi自动关闭(在节能模式下)
-    if (0 == sys_cfg.power_mode && true == m_wifi_status && doDelayMillisTime(WIFI_LIFE_CYCLE, &m_preWifiReqMillis, false))
+    if (0 == sys_cfg.power_mode && m_wifi_status && doDelayMillisTime(WIFI_LIFE_CYCLE, &m_preWifiReqMillis, false))
     {
-        send_to(CTRL_NAME, CTRL_NAME, APP_MESSAGE_WIFI_DISCONN, 0, NULL);
+        send_to(CTRL_NAME, CTRL_NAME, APP_MESSAGE_WIFI_DISCONN, nullptr, nullptr);
     }
 
     if (0 == app_exit_flag)
@@ -178,8 +178,8 @@ int AppController::main_process(ImuAction *act_info)
         }
         else if (ACTIVE_TYPE::GO_FORWORD == act_info->active)
         {
-            app_exit_flag = 1; // 进入app
-            if (NULL != appList[cur_app_index]->app_init)
+            app_exit_flag = true; // 进入app
+            if (nullptr != appList[cur_app_index]->app_init)
             {
                 (*(appList[cur_app_index]->app_init))(this); // 执行APP初始化
             }
@@ -202,7 +202,7 @@ int AppController::main_process(ImuAction *act_info)
         (*(appList[cur_app_index]->main_process))(this, act_info);
     }
     act_info->active = ACTIVE_TYPE::UNKNOWN;
-    act_info->isValid = 0;
+    act_info->isValid = false;
     return 0;
 }
 
@@ -216,7 +216,7 @@ APP_OBJ *AppController::getAppByName(const char *name)
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 int AppController::getAppIdxByName(const char *name)
@@ -256,10 +256,10 @@ int AppController::send_to(const char *from, const char *to,
     else
     {
         // 各个APP之间通信的消息
-        if (NULL != toApp)
+        if (nullptr != toApp)
         {
             Serial.print("[Massage]\tFrom " + String(fromApp->app_name) + "\tTo " + String(toApp->app_name) + "\n");
-            if (NULL != toApp->message_handle)
+            if (nullptr != toApp->message_handle)
             {
                 toApp->message_handle(from, to, type, message, ext_info);
             }
@@ -276,7 +276,7 @@ int AppController::send_to(const char *from, const char *to,
 int AppController::req_event_deal(void)
 {
     // 请求事件的处理
-    for (std::list<EVENT_OBJ>::iterator event = eventList.begin(); event != eventList.end();)
+    for (auto event = eventList.begin(); event != eventList.end();)
     {
         if ((*event).nextRunTime > GET_SYS_MILLIS())
         {
@@ -285,7 +285,7 @@ int AppController::req_event_deal(void)
         }
         // 后期可以拓展其他事件的处理
         bool ret = wifi_event((*event).type);
-        if (false == ret)
+        if (!ret)
         {
             // 本事件没处理完成
             (*event).retryCount += 1;
@@ -307,10 +307,10 @@ int AppController::req_event_deal(void)
         }
 
         // 事件回调
-        if (NULL != (*event).from && NULL != (*event).from->message_handle)
+        if (nullptr != (*event).from && nullptr != (*event).from->message_handle)
         {
             (*((*event).from->message_handle))(CTRL_NAME, (*event).from->app_name,
-                                               (*event).type, (*event).info, NULL);
+                                               (*event).type, (*event).info, nullptr);
         }
         Serial.print("[EVENT]\tDelete -> " + String(app_event_type_info[(*event).type]));
         event = eventList.erase(event); // 删除该响应完成的事件
@@ -332,7 +332,7 @@ bool AppController::wifi_event(APP_MESSAGE_TYPE type)
     {
         // 更新请求
         // CONN_ERROR == g_network.end_conn_wifi() ||
-        if (false == m_wifi_status)
+        if (!m_wifi_status)
         {
             g_network.start_conn_wifi(sys_cfg.ssid_0.c_str(), sys_cfg.password_0.c_str());
             m_wifi_status = true;

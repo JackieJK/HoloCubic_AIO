@@ -214,7 +214,7 @@ void init_page_header()
 
 void init_page_footer()
 {
-    webpage_footer = F("<footer>&copy;ClimbSnail 2021</footer>");
+    webpage_footer = F("<footer>&copy;Jackie 2023</footer>");
     webpage_footer += F("</body></html>");
 }
 
