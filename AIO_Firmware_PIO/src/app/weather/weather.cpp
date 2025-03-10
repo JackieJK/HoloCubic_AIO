@@ -452,6 +452,7 @@ static int weather_init(AppController *sys)
     //     1,                               /*任务的优先级*/
     //     &run_data->xHandle_task_update); /*任务句柄*/
 
+    rgb_close();
     return 0;
 }
 
@@ -471,18 +472,18 @@ static void weather_process(AppController *sys,
         run_data->coactusUpdateFlag = 0x01;
         delay(500); // 以防间接强制更新后，生产很多请求 使显示卡顿
     }
-    else if (TURN_RIGHT == act_info->active)
-    {
-        anim_type = LV_SCR_LOAD_ANIM_MOVE_RIGHT;
-        run_data->clock_page = (run_data->clock_page + 1) % WEATHER_PAGE_SIZE;
-    }
-    else if (TURN_LEFT == act_info->active)
-    {
-        anim_type = LV_SCR_LOAD_ANIM_MOVE_LEFT;
-        // 以下等效与 clock_page = (clock_page + WEATHER_PAGE_SIZE - 1) % WEATHER_PAGE_SIZE;
-        // +3为了不让数据溢出成负数，而导致取模逻辑错误
-        run_data->clock_page = (run_data->clock_page + WEATHER_PAGE_SIZE - 1) % WEATHER_PAGE_SIZE;
-    }
+    // else if (TURN_RIGHT == act_info->active)
+    // {
+    //     anim_type = LV_SCR_LOAD_ANIM_MOVE_RIGHT;
+    //     run_data->clock_page = (run_data->clock_page + 1) % WEATHER_PAGE_SIZE;
+    // }
+    // else if (TURN_LEFT == act_info->active)
+    // {
+    //     anim_type = LV_SCR_LOAD_ANIM_MOVE_LEFT;
+    //     // 以下等效与 clock_page = (clock_page + WEATHER_PAGE_SIZE - 1) % WEATHER_PAGE_SIZE;
+    //     // +3为了不让数据溢出成负数，而导致取模逻辑错误
+    //     run_data->clock_page = (run_data->clock_page + WEATHER_PAGE_SIZE - 1) % WEATHER_PAGE_SIZE;
+    // }
 
     // 界面刷新
     if (run_data->clock_page == 0)

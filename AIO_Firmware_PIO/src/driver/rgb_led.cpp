@@ -8,7 +8,7 @@ void Pixel::init()
     FastLED.setBrightness(200);
 }
 
-Pixel &Pixel::setRGB(int r, int g, int b)
+Pixel& Pixel::setRGB(int r, int g, int b)
 {
     for (int pos = 0; pos < RGB_LED_NUM; ++pos)
     {
@@ -19,7 +19,7 @@ Pixel &Pixel::setRGB(int r, int g, int b)
     return *this;
 }
 
-Pixel &Pixel::setHVS(uint8_t ih, uint8_t is, uint8_t iv)
+Pixel& Pixel::setHVS(uint8_t ih, uint8_t is, uint8_t iv)
 {
     for (int pos = 0; pos < RGB_LED_NUM; ++pos)
     {
@@ -30,7 +30,7 @@ Pixel &Pixel::setHVS(uint8_t ih, uint8_t is, uint8_t iv)
     return *this;
 }
 
-Pixel &Pixel::fill_rainbow(int min_r, int max_r,
+Pixel& Pixel::fill_rainbow(int min_r, int max_r,
                            int min_g, int max_g,
                            int min_b, int max_b)
 {
@@ -40,7 +40,7 @@ Pixel &Pixel::fill_rainbow(int min_r, int max_r,
     return *this;
 }
 
-Pixel &Pixel::setBrightness(float duty)
+Pixel& Pixel::setBrightness(float duty)
 {
     duty = constrain(duty, 0, 1);
     FastLED.setBrightness((uint8_t)(255 * duty));
@@ -57,13 +57,13 @@ TaskHandle_t handleLed = NULL;
 TimerHandle_t xTimer_rgb = NULL;
 
 void led_timerHandler(TimerHandle_t xTimer);
-void led_taskHandler(void *parameter);
+void led_taskHandler(void* parameter);
 static void hsvModeChange(void);
 static void rgbModeChange(void);
 static void onceChange(void);
 static void count_cur_brightness(void);
 
-bool set_rgb_and_run(RgbParam *rgb_setting, LED_RUN_MODE mode)
+bool set_rgb_and_run(RgbParam* rgb_setting, LED_RUN_MODE mode)
 {
     if (RUN_MODE_NONE <= mode)
     {
@@ -108,7 +108,7 @@ bool set_rgb_and_run(RgbParam *rgb_setting, LED_RUN_MODE mode)
         }
         xTimer_rgb = xTimerCreate("led_timerHandler",
                                   g_rgb.time / portTICK_PERIOD_MS,
-                                  pdTRUE, (void *)0, led_timerHandler);
+                                  pdTRUE, (void*)0, led_timerHandler);
         xTimerStart(xTimer_rgb, 0); // 开启定时器
     }
     else if (RUN_MODE_TASK == run_mode)
@@ -119,7 +119,7 @@ bool set_rgb_and_run(RgbParam *rgb_setting, LED_RUN_MODE mode)
                 led_taskHandler,
                 "led_taskHandler",
                 8 * 128, // 实际上 7*128就够用
-                (void *)&g_rgb.time,
+                (void*)&g_rgb.time,
                 TASK_RGB_PRIORITY,
                 &handleLed);
             if (taskRgbReturned != pdPASS)
@@ -136,9 +136,9 @@ void led_timerHandler(TimerHandle_t xTimer)
     onceChange();
 }
 
-void led_taskHandler(void *parameter)
+void led_taskHandler(void* parameter)
 {
-    int *ms = (int *)parameter; // 控制时间
+    int* ms = (int*)parameter; // 控制时间
     for (;;)
     {
         onceChange();
@@ -210,7 +210,7 @@ static void hsvModeChange(void)
     rgb.setHVS(rgb_status.current_h,
                rgb_status.current_s,
                rgb_status.current_v)
-        .setBrightness(rgb_status.current_brightness / 1000.0f);
+       .setBrightness(rgb_status.current_brightness / 1000.0f);
 }
 
 static void rgbModeChange(void)
@@ -266,7 +266,7 @@ static void rgbModeChange(void)
     rgb.setRGB(rgb_status.current_r,
                rgb_status.current_g,
                rgb_status.current_b)
-        .setBrightness(rgb_status.current_brightness / 1000.0f);
+       .setBrightness(rgb_status.current_brightness / 1000.0f);
 }
 
 static void count_cur_brightness(void)
@@ -306,4 +306,13 @@ void rgb_stop(void)
         vTaskDelete(handleLed);
         handleLed = NULL;
     }
+}
+
+void rgb_close(void)
+{
+    rgb_stop();
+    rgb.setRGB(0,
+               0,
+               0)
+       .setBrightness(0.0f);
 }

@@ -210,7 +210,7 @@ void setup()
                             rgb_cfg->min_brightness, rgb_cfg->max_brightness,
                             rgb_cfg->brightness_step, rgb_cfg->time};
     // 运行RGB任务
-    set_rgb_and_run(&rgb_setting, RUN_MODE_TASK);
+    // set_rgb_and_run(&rgb_setting, RUN_MODE_TASK);
 
     // 先初始化一次动作数据 防空指针
     act_info = mpu.getAction();
